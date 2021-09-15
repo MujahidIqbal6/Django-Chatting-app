@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+</head>
+<style>
+    * {
+    margin: 0;
+    padding: 0;
+    font-family: 'Nunito', sans-serif;
+  }
+  
+  html, body {
+    background-color:rgba(1, 36, 4, 0.865);
+    overflow: hidden;
+  }
+  
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 106vh;
+    width: 100vw;
+   
+  }
+  
+  .chatbox {
+    background: rgba(255, 255, 255, 0.05);
+    width: 98%;
+    height: 70%;
+    border-radius: 0.2em;
+    position: relative;
+    box-shadow: 1px 1px 12px rgba(0, 0, 0, 0.1);
+    overflow-y:scroll;
+  }
+  
+
+  
+
+  .chatbox__user-list {
+    background: rgba(255, 255, 255, 0.1);
+    width: 23%;
+    height: 100%;
+    float: left;
+    border-top-right-radius: 0.2em;
+    border-bottom-right-radius: 0.2em;
+  
+  }
+  
+  .chatbox__user-list h1 {
+    background: rgba(255, 255, 255, 0.05);
+    color: black;
+    font-size: 0.9em;
+    padding: 1em;
+    margin: 0;
+    font-weight: 300;
+    text-align: center;
+
+  }
+  
+  .chatbox__user, .chatbox__user--active, .chatbox__user--away {
+    width: 0.5em;
+    height: 0.5em;
+    border-radius: 100%;
+    margin: 1em 0.7em;
+  }
+
+  .chatbox__messages{
+    display: flex;
+  flex-direction: column;
+ 
+  }
+  .chatbox__messages__user-message--ind-message-right {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 1em 0;
+    float:right;
+    height: auto;
+    width: auto;
+    border-radius: 5px;
+    margin: 2em 1em;
+    
+  }
+
+  .chatbox__messages__user-message--ind-message-right > p.name {
+    color: #FFF;
+    font-size: 1em;
+   
+  }
+  
+  .chatbox__messages__user-message--ind-message-right > p.message {
+    color: #FFF;
+    font-size: 0.7em;
+    margin: 0 2.8em;
+   
+  }
+  
+  .chatbox__messages__user-message--ind-message-left {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 1em 0;
+    float:left;
+    height: auto;
+    width: auto;
+    border-radius: 5px;
+    margin: 2em 1em;
+    overflow: auto;
+    
+  }
+
+  .chatbox__messages__user-message--ind-message-left > p.name {
+    float: right;
+    color: #FFF;
+    font-size: 1em;
+   
+  }
+  
+  .chatbox__messages__user-message--ind-message-left > p.message {
+    color: #FFF;
+    float: right;
+    font-size: 0.7em;
+    margin: 0 2.8em;
+  
+  }
+  
+  
+  .chatbox__user--active {
+    background: rgba(23, 190, 187, 0.8);
+  }
+  
+  
+  .chatbox__user--away {
+    background: rgba(255, 253, 130, 0.8);
+  }
+  
+  .chatbox p {
+    float: left;
+    text-align: left;
+    margin: -0.25em 2em;
+    font-size: 0.7em;
+    font-weight: 300;
+    color: #FFF;
+    width: auto;
+    
+  }
+  
+  .chatbox form {
+    background: #222;
+    
+  }
+  
+  .container form input {
+    float:none;
+    background: rgba(187, 48, 48, 0.03);
+    position:absolute;
+    bottom: 0;
+    right: 0;
+    border: none;
+    width: 75%;
+    padding: 1.2em;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 300;
+    
+  }
+
+  #send_msg{  
+    width: 150px;  
+    height: 10px;  
+    border: none;  
+    margin: auto;  
+    border-radius: 16px;  
+    padding-left: 7px;  
+    font-size: 15px;
+    color: #f1f9f193;  
+  
+  
+}  
+</style>
+<body>
+    <div class='container'>
+        <div class='chatbox'>
+            <div class='chatbox__user-list'>
+                <h1>Friends Online</h1>
+                {% for usr in users %}
+                <div class='chatbox__user--active'>
+                  <p>{{usr}}</p>
+                </div>
+                {% endfor %}    
+            </div>
+            <div class="chatbox__messages">
+              {% for msg in user1_msgs %}
+                <div class="chatbox__messages__user-message-right">
+                    <div class="chatbox__messages__user-message--ind-message-right">
+                        <p class="name">{{user1}}</p>
+                        <br />
+                        <p class="message">{{msg}}</p>
+                    </div>
+                </div>
+                {% endfor %} 
+                {% for msg in user2_msgs %}
+                <div class="chatbox__messages__user-message-left">
+                    <div class="chatbox__messages__user-message--ind-message-left">
+                      <p class="name">{{user2}}</p>
+                      <br />
+                      <p class="message">{{msg}}</p>
+                    </div>
+                </div>
+                {% endfor %} 
+            </div>
+        </div>
+        <form id="sending" action="{% url 'chat:sending' %}"  method="post">
+          {% csrf_token %}   
+          <input type="text"  name="newmsg" id="newmsg" placeholder="Type Message">
+          <input type="submit"  id="send_msg" value="Send">
+      </form> 
+    </div> 
+</body>
+
+</html>
+
+

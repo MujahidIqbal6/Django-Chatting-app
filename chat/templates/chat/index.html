@@ -1,0 +1,85 @@
+<!DOCTYPE html>    
+<html>    
+<head>    
+    <title>Login Form</title>
+    <style>
+body  
+{  
+    margin: 0;  
+    padding: 0;  
+    background-color:#3c0624ba;  
+    font-family: 'Arial';  
+}  
+.login{  
+        width: 382px;  
+        overflow: hidden;  
+        margin: auto;  
+        margin: 20 0 0 450px;  
+        padding: 80px;  
+        background: #23463f;  
+        border-radius: 12px ;  
+          
+}  
+h2{  
+    text-align: center;  
+    color: #edaac4;  
+    padding: 20px;  
+}  
+label{  
+    color: #08ffd1;  
+    font-size: 17px;  
+}  
+#Uname{  
+    width: 300px;  
+    height: 30px;  
+    border: none;  
+    border-radius: 3px;  
+    padding-left: 8px;  
+}  
+#Pass{  
+    width: 300px;  
+    height: 30px;  
+    border: none;  
+    border-radius: 3px;  
+    padding-left: 8px;  
+      
+}  
+#log{  
+    width: 300px;  
+    height: 30px;  
+    border: none;  
+    border-radius: 17px;  
+    padding-left: 7px;  
+    font-size: 16px;
+    color: #050605;  
+  
+  
+}  
+    </style>     
+</head>    
+<body>    
+    <h2>Welcome to Chat Application</h2><br>    
+    <div class="login">    
+    <form id="login" action="{% url 'chat:login' %}"  method="post"> 
+        {% csrf_token %}   
+        <label><b>User Name     
+        </b>    
+        </label>    
+        <input type="text" name="Uname" id="Uname" placeholder="Username">    
+        <br><br>    
+        <label><b>Password     
+        </b>    
+        </label>    
+        <input type="Password" name="Pass" id="Pass" placeholder="Password">    
+        <br><br>    
+        <input type="submit" name="log" id="log" value="Login">       
+        <br><br>  
+        <label>
+            {% if error %}
+            <b></b>Incorrect Username or Password </b>  
+            {% endif %}       
+        </label>       
+    </form>     
+</div>    
+</body>    
+</html>     
