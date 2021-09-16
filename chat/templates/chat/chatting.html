@@ -2,6 +2,7 @@
 <html>
 
 <head>
+  <meta http-equiv="refresh" content="10">
 </head>
 <style>
     * {
@@ -44,6 +45,7 @@
     float: left;
     border-top-right-radius: 0.2em;
     border-bottom-right-radius: 0.2em;
+    cursor: pointer;
   
   }
   
@@ -174,13 +176,35 @@
   
 }  
 </style>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $("div.chatbox__user--active").click(function(){
+      var body="user="+this.id;
+      let xhr = new XMLHttpRequest();
+      xhr.open('POST', '/chat/setuser/',true);
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      xhr.send(body);
+      xhr.onload = function() {
+  if (xhr.status != 200) { // analyze HTTP status of the response
+    alert(`Error ${xhr.status}: ${xhr.statusText}`); // e.g. 404: Not Found
+  } else { // show the result
+    location.reload(); // response is the server response
+  }
+};    
+       })
+});
+</script>
+
 <body>
     <div class='container'>
         <div class='chatbox'>
-            <div class='chatbox__user-list'>
+            <div class='chatbox__user-list' 
                 <h1>Friends Online</h1>
                 {% for usr in users %}
-                <div class='chatbox__user--active'>
+                <div class='chatbox__user--active' id={{usr}}>
                   <p>{{usr}}</p>
                 </div>
                 {% endfor %}    

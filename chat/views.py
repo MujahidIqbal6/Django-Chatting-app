@@ -5,37 +5,73 @@ from django.http import Http404
 from django.shortcuts import render,get_object_or_404
 from django.urls import reverse
 from .models import User,Mesg
-
+from django.views.decorators.csrf import csrf_exempt
 
 
 # Create your views here.
 
 def index(request):
+  
     '''
     view func for main index page
     '''
+    #remove all temporary session data
+    request.session.flush()
     #load html template
     template = loader.get_template('chat/index.html')
     #empty context
     context = {}
+    #render html template and return response
     return HttpResponse(template.render(context, request))
+
+@csrf_exempt
+def setuser(request):
+     '''
+     post api to change second user
+     '''
+     if request.POST:
+       #set second user value in session to clicked user value  
+       request.session['user2']=request.POST['user']   
+       #redirect to chatting page
+       return HttpResponseRedirect(reverse('chat:chatting', args=()))
+
+ 
 
 
 def chatting(request):
+    '''
+     view func to display main chatting page
+    '''
     #list to maintain all signed in users
     users_active=[]
 
-    #saving all users to active user list
-    for key in request.session.keys():
-        if "#user_" in key:
-            users_active.append(key[6:])
-   
- 
-    user1_msgs=User.objects.get(user_name=request.session['user1']).mesg_set.all()
-    user2_msgs=User.objects.get(user_name=request.session['user2']).mesg_set.all()
-         
+    #get all active users from DB
+    for user in User.objects.filter(active=True):
+        users_active.append(user.user_name)
+    
+    #get both users msgs
+    user1_msgs=[]
+    user2_msgs=[]
+
+    #get user objects
+    user1=User.objects.get(user_name=request.session['user1'])
+    user2=User.objects.get(user_name=request.session['user2'])
+    
+
+    #check if user a selected a second user to chat or not
+    if request.session['user2']!=request.session['user1']:
+
+     #get msgs sent by user1 to user2   
+     for msg in Mesg.objects.filter(from_user=user1,to_user=user2):
+        user1_msgs.append(msg.msg_text)
+
+     #get msgs sent by user2 to user1   
+     for msg in Mesg.objects.filter(from_user=user2,to_user=user1):
+        user2_msgs.append(msg.msg_text)
+
+    #render and return html template     
     template = loader.get_template('chat/chatting.html')
-    context = {'users':users_active, 'user1':request.session['user1'],'user2':'Sohaib','user1_msgs':user1_msgs,'user2_msgs':user2_msgs}
+    context = {'users':users_active, 'user1':request.session['user1'].upper(),'user2':request.session['user2'].upper(),'user1_msgs':user1_msgs,'user2_msgs':user2_msgs}
     return HttpResponse(template.render(context, request))
 
 def sending(request):
@@ -46,7 +82,8 @@ def sending(request):
         #get current msg
         msg = request.POST['newmsg']
         user=User.objects.get(user_name=request.session['user1'])
-        new_msg=Mesg(msg_text=msg,user=user)
+        user2=User.objects.get(user_name=request.session['user2'])
+        new_msg=Mesg(msg_text=msg,from_user=user,to_user=user2)
         new_msg.save()
     return HttpResponseRedirect(reverse('chat:chatting', args=()))
 
@@ -66,10 +103,16 @@ def login(request):
         #if correct credentials
         if current_user==1:
             #save current user to session object
-            request.session["#user_"+username]=1
             request.session['user1']=username
-            request.session['user2']='sohaib'
+            request.session['user2']=username
             request.session.modified = True
+
+            #add user to online users
+            u=User.objects.get(user_name=username,password=password)
+            u.active=True
+            u.save()
+            
+            #redirect to chatting page
             return HttpResponseRedirect(reverse('chat:chatting', args=()))
 
         else:

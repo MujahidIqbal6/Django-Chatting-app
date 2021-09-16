@@ -9,4 +9,5 @@ urlpatterns = [
     path('login/',views.login, name='login'),
     path('chatting/',views.chatting, name='chatting'),
     path('sending/',views.sending, name='sending'),
+    path('setuser/',views.setuser, name='setuser'),
    ]
