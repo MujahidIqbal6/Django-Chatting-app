@@ -10,11 +10,14 @@ This is a very simple chat application made entirely in python/django. It allows
 
 ## How to Start
 
-Kindly Run Commands given below. For each user, server should be running on different
+Kindly Run Commands given below. But first, create a virtual python environment.
+
+Note:For each user, server should be running on different
 browser and on different port
 
 ```bash
 git clone https://github.com/MujahidIqbal6/Django-Chatting-app.git
+python -m pip install -r requirements.txt
 python3 manage.py runserver
 ```
 

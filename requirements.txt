@@ -1,5 +1,2 @@
-# This file may be used to create an environment using:
-# $ conda create --name <env> --file <this file>
-# platform: osx-64
-django=3.2.7=pypi_0
 
+Django==3.2.7
