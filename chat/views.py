@@ -118,7 +118,7 @@ def login(request):
         else:
             #redirect to main index page with error shown
             template = loader.get_template('chat/index.html')
-            context = {'error':'1'}
+            context = {'error':'1'} 
             return HttpResponse(template.render(context, request))
 
     
