@@ -10,4 +10,5 @@ urlpatterns = [
     path('chatting/',views.chatting, name='chatting'),
     path('sending/',views.sending, name='sending'),
     path('setuser/',views.setuser, name='setuser'),
+    path('getmsgs/',views.getmsgs, name='getmsgs'),
    ]

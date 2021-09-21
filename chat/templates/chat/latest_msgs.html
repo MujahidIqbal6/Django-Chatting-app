@@ -1,0 +1,20 @@
+
+              {% for msg in user1_msgs %}
+                <div class="chatbox__messages__user-message-right">
+                    <div class="chatbox__messages__user-message--ind-message-right">
+                        <p class="name">{{user1}}</p>
+                        <br />
+                        <p class="message">{{msg}}</p>
+                    </div>
+                </div>
+                {% endfor %} 
+                {% for msg in user2_msgs %}
+                <div class="chatbox__messages__user-message-left">
+                    <div class="chatbox__messages__user-message--ind-message-left">
+                      <p class="name">{{user2}}</p>
+                      <br />
+                      <p class="message">{{msg}}</p>
+                    </div>
+                </div>
+                {% endfor %} 
+         

@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <meta http-equiv="refresh" content="10">
+  <meta>
 </head>
 <style>
     * {
@@ -177,27 +177,6 @@
 }  
 </style>
 
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script type="text/javascript">
-  $(document).ready(function() {
-    $("div.chatbox__user--active").click(function(){
-      var body="user="+this.id;
-      let xhr = new XMLHttpRequest();
-      xhr.open('POST', '/chat/setuser/',true);
-      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-      xhr.send(body);
-      xhr.onload = function() {
-  if (xhr.status != 200) { // analyze HTTP status of the response
-    alert(`Error ${xhr.status}: ${xhr.statusText}`); // e.g. 404: Not Found
-  } else { // show the result
-    location.reload(); // response is the server response
-  }
-};    
-       })
-});
-</script>
-
 <body>
     <div class='container'>
         <div class='chatbox'>
@@ -237,6 +216,41 @@
       </form> 
     </div> 
 </body>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $("div.chatbox__user--active").click(function(){
+      var body="user="+this.id;
+      let xhr = new XMLHttpRequest();
+      xhr.open('POST', '/chat/setuser/',true);
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      xhr.send(body);
+      xhr.onload = function() {
+  if (xhr.status != 200) { // analyze HTTP status of the response
+    alert(`Error ${xhr.status}: ${xhr.statusText}`); // e.g. 404: Not Found
+  } else { // show the result
+    location.reload(); // response is the server response
+  }
+};    
+       })
+});
+</script>
+<script type="text/javascript">
+  setInterval(function() {
+      let xhr = new XMLHttpRequest();
+      xhr.open('GET', '/chat/getmsgs/',true);
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      xhr.send();
+      xhr.onload = function() {
+  if (xhr.status != 200) { 
+    alert(`Error ${xhr.status}: ${xhr.statusText}`); 
+  } else { // show the result
+    $('.chatbox__messages').append(xhr.responseText);
+  }
+};   
+}, 3000);
+</script>
 
 </html>
 

@@ -6,6 +6,7 @@ from django.shortcuts import render,get_object_or_404
 from django.urls import reverse
 from .models import User,Mesg
 from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 
 
 # Create your views here.
@@ -36,7 +37,39 @@ def setuser(request):
        return HttpResponseRedirect(reverse('chat:chatting', args=()))
 
  
+def getmsgs(request):
+    '''
+     view func to return all unread msgs
+     
+    '''
+    #get both users msgs
+    user1_msgs=[]
+    user2_msgs=[]
 
+    #get user objects
+    user1=User.objects.get(user_name=request.session['user1'])
+    user2=User.objects.get(user_name=request.session['user2'])
+
+    #check if user a selected a second user to chat or not
+    if request.session['user2']!=request.session['user1']:
+
+     #get msgs sent by user1 to user2   
+     for msg in Mesg.objects.filter(from_user=user1,to_user=user2,is_read=False):
+        user1_msgs.append(msg.msg_text)
+        msg.is_read=True
+        msg.save()
+
+
+     #get msgs sent by user2 to user1
+     for msg in Mesg.objects.filter(from_user=user2,to_user=user1,is_read=False):
+        user2_msgs.append(msg.msg_text)
+        msg.is_read=True
+        msg.save()
+     
+    #render and return html template     
+    template = loader.get_template('chat/latest_msgs.html')
+    context = {'user1':request.session['user1'].upper(),'user2':request.session['user2'].upper(),'user1_msgs':user1_msgs,'user2_msgs':user2_msgs}
+    return HttpResponse(template.render(context, request))
 
 def chatting(request):
     '''
@@ -76,15 +109,19 @@ def chatting(request):
 
 def sending(request):
     '''
-    view func for receiving new text message
+    post api for receiving new text message
     '''
     if request.POST:
         #get current msg
         msg = request.POST['newmsg']
+        #get both users
         user=User.objects.get(user_name=request.session['user1'])
         user2=User.objects.get(user_name=request.session['user2'])
-        new_msg=Mesg(msg_text=msg,from_user=user,to_user=user2)
-        new_msg.save()
+        #save new msg to db 
+        new_msg=Mesg(msg_text=msg,from_user=user,to_user=user2,is_read=False)
+        new_msg.save()  
+         
+    #redirect to same page    
     return HttpResponseRedirect(reverse('chat:chatting', args=()))
 
 def login(request):

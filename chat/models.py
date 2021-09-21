@@ -12,9 +12,11 @@ class User(models.Model):
 
 class Mesg(models.Model):
     msg_text=models.CharField(max_length=400)
-    #user=models.ForeignKey(User, on_delete=models.CASCADE)
+    is_read=models.BooleanField(default=True)
     from_user=models.ForeignKey(User, on_delete=models.CASCADE,related_name='sentfrom',default=1)
     to_user=models.ForeignKey(User, on_delete=models.CASCADE,related_name='sentto',default=1)
 
     def __str__(self):
         return self.msg_text
+
+    
